@@ -1,757 +1,265 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Teste Técnico – Geolocalização Aprimorado</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teste Técnico – Geolocalização v3</title>
 
-  <style>
-    * { box-sizing: border-box; }
-    
-    body { 
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
-      margin: 0;
-      padding: 20px;
-      line-height: 1.6;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
-    }
-    
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      background: white;
-      border-radius: 12px;
-      padding: 30px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-    }
-    
-    h1 { 
-      color: #2c3e50;
-      margin-top: 0;
-      font-size: 2em;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    
-    h2 { 
-      color: #34495e;
-      border-bottom: 2px solid #3498db;
-      padding-bottom: 8px;
-      margin-top: 30px;
-    }
-    
-    .controls {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin: 20px 0;
-    }
-    
-    button { 
-      padding: 12px 20px;
-      font-size: 14px;
-      cursor: pointer;
-      border: none;
-      border-radius: 6px;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
-    
-    button:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
-    button:active { transform: translateY(0); }
-    button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-    
-    .btn-primary { background: #3498db; color: white; }
-    .btn-primary:hover { background: #2980b9; }
-    
-    .btn-danger { background: #e74c3c; color: white; }
-    .btn-danger:hover { background: #c0392b; }
-    
-    .btn-secondary { background: #95a5a6; color: white; }
-    .btn-secondary:hover { background: #7f8c8d; }
-    
-    .box { 
-      border: 1px solid #dfe6e9;
-      border-radius: 8px;
-      padding: 20px;
-      margin-bottom: 20px;
-      background: #ffffff;
-    }
-    
-    .warning { background: #fff9e6; border-color: #f39c12; }
-    .success { background: #d5f4e6; border-color: #27ae60; }
-    .error { background: #ffeaea; border-color: #e74c3c; color: #c0392b; }
-    .info { background: #e8f4f8; border-color: #3498db; }
-    
-    pre { 
-      background: #2c3e50;
-      color: #ecf0f1;
-      padding: 20px;
-      border-radius: 6px;
-      overflow-x: auto;
-      font-size: 13px;
-      line-height: 1.5;
-    }
-    
-    .small { font-size: 0.9em; color: #7f8c8d; }
-    
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 15px;
-      margin: 20px 0;
-    }
-    
-    .stat-card {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      padding: 20px;
-      border-radius: 8px;
-      text-align: center;
-    }
-    
-    .stat-value {
-      font-size: 2em;
-      font-weight: bold;
-      margin: 10px 0;
-    }
-    
-    .stat-label {
-      font-size: 0.9em;
-      opacity: 0.9;
-    }
-    
-    .history-item { 
-      border: 1px solid #ecf0f1;
-      border-radius: 6px;
-      padding: 15px;
-      margin-bottom: 12px;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      transition: all 0.2s ease;
-      background: white;
-    }
-    
-    .history-item:hover { 
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      transform: translateX(4px);
-    }
-    
-    .history-info { flex: 1; }
-    .history-info strong { color: #2c3e50; font-size: 1.05em; }
-    
-    .badge {
-      display: inline-block;
-      padding: 4px 10px;
-      border-radius: 12px;
-      font-size: 0.85em;
-      font-weight: 600;
-      margin: 5px 0;
-    }
-    
-    .badge-gps { background: #27ae60; color: white; }
-    .badge-wifi { background: #3498db; color: white; }
-    .badge-wifi-aprox { background: #f39c12; color: white; }
-    .badge-ip { background: #95a5a6; color: white; }
-    
-    .delete-btn {
-      color: #e74c3c;
-      cursor: pointer;
-      font-size: 20px;
-      padding: 0 10px;
-      transition: all 0.2s ease;
-    }
-    
-    .delete-btn:hover {
-      color: #c0392b;
-      transform: scale(1.2);
-    }
-    
-    a { 
-      text-decoration: none;
-      color: #3498db;
-      font-weight: 500;
-      transition: color 0.2s ease;
-    }
-    
-    a:hover { color: #2980b9; text-decoration: underline; }
-    
-    .config-panel {
-      background: #f8f9fa;
-      padding: 15px;
-      border-radius: 6px;
-      margin: 15px 0;
-    }
-    
-    .config-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin: 8px 0;
-      flex-wrap: wrap;
-    }
-    
-    .config-row label {
-      font-weight: 600;
-      min-width: 180px;
-      color: #2c3e50;
-    }
-    
-    .config-row input {
-      padding: 8px 12px;
-      border: 1px solid #dfe6e9;
-      border-radius: 4px;
-      width: 100px;
-      font-size: 14px;
-    }
-    
-    .loading {
-      display: inline-block;
-      width: 16px;
-      height: 16px;
-      border: 3px solid #f3f3f3;
-      border-top: 3px solid #3498db;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
-    
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-    
-    .export-options {
-      display: flex;
-      gap: 10px;
-      margin-top: 15px;
-    }
-    
-    .chart-container {
-      margin: 20px 0;
-      padding: 20px;
-      background: #f8f9fa;
-      border-radius: 8px;
-    }
-    
-    .accuracy-bar {
-      width: 100%;
-      height: 30px;
-      background: #ecf0f1;
-      border-radius: 15px;
-      overflow: hidden;
-      position: relative;
-      margin: 10px 0;
-    }
-    
-    .accuracy-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #27ae60, #f39c12, #e74c3c);
-      border-radius: 15px;
-      transition: width 0.5s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-weight: bold;
-      font-size: 12px;
-    }
-    
-    @media (max-width: 768px) {
-      .container { padding: 15px; }
-      h1 { font-size: 1.5em; }
-      .controls { flex-direction: column; }
-      button { width: 100%; justify-content: center; }
-      .stats-grid { grid-template-columns: 1fr; }
-      .config-row { flex-direction: column; align-items: flex-start; }
-      .config-row label { min-width: auto; }
-    }
-  </style>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f6f8;
+  margin: 0;
+  padding: 20px;
+}
+.container {
+  max-width: 1200px;
+  margin: auto;
+  background: #fff;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.1);
+}
+h1,h2 { color:#2c3e50; }
+button {
+  padding: 10px 16px;
+  margin: 5px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+.btn-primary { background:#3498db; color:#fff; }
+.btn-danger { background:#e74c3c; color:#fff; }
+.btn-secondary { background:#95a5a6; color:#fff; }
+.box {
+  border:1px solid #ddd;
+  border-radius:8px;
+  padding:15px;
+  margin-bottom:20px;
+}
+.warning { background:#fff9e6; border-color:#f39c12; }
+.success { background:#e8f5e9; border-color:#27ae60; }
+.error { background:#fdecea; border-color:#e74c3c; }
+.info { background:#e8f4f8; border-color:#3498db; }
+pre {
+  background:#2c3e50;
+  color:#ecf0f1;
+  padding:15px;
+  border-radius:6px;
+  overflow-x:auto;
+}
+.history-item {
+  border-bottom:1px dashed #ccc;
+  padding:10px 0;
+  display:flex;
+  justify-content:space-between;
+}
+.delete-btn {
+  cursor:pointer;
+  color:#c0392b;
+  font-weight:bold;
+}
+.badge {
+  display:inline-block;
+  padding:4px 10px;
+  border-radius:12px;
+  font-size:.8em;
+  color:#fff;
+  margin-left:6px;
+}
+.badge-gps { background:#27ae60; }
+.badge-wifi { background:#3498db; }
+.badge-wifi-aprox { background:#f39c12; }
+.badge-ip { background:#7f8c8d; }
+.badge-ipcorp { background:#2c3e50; }
+</style>
 </head>
+
 <body>
-
 <div class="container">
-  <h1>
-    <span>🌍</span>
-    Teste Técnico de Geolocalização
-  </h1>
 
-  <div class="box warning">
-    <h2 style="margin-top: 0; border: none;">🎯 Objetivo</h2>
-    <p class="small">
-      Analisar a obtenção de geolocalização pelo navegador com análise avançada de precisão,
-      detecção de duplicatas, estatísticas completas e exportação de dados em múltiplos formatos.
-    </p>
-  </div>
+<h1>🌍 Teste Técnico de Geolocalização – v3</h1>
 
-  <div class="config-panel">
-    <strong>⚙️ Configurações de Classificação</strong>
-    <div class="config-row">
-      <label>GPS (precisão até):</label>
-      <input type="number" id="gpsMax" value="20" min="1" max="100"> metros
-    </div>
-    <div class="config-row">
-      <label>Wi-Fi (precisão até):</label>
-      <input type="number" id="wifiMax" value="200" min="1" max="500"> metros
-    </div>
-    <div class="config-row">
-      <label>Wi-Fi Aproximado (até):</label>
-      <input type="number" id="wifiAproxMax" value="1000" min="1" max="5000"> metros
-    </div>
-  </div>
+<div class="box warning">
+<strong>Objetivo</strong><br>
+Ferramenta de diagnóstico para identificar a origem provável da geolocalização
+(GPS, Wi-Fi ou IP), avaliar repetição de coordenadas e gerar evidência técnica
+para redes, segurança e auditoria.
+</div>
 
-  <div class="controls">
-    <button class="btn-primary" onclick="obterLocalizacao()" id="btnObter">
-      <span>📍</span> Obter Localização
-    </button>
-    <button class="btn-secondary" onclick="obterMultiplas()" id="btnMultiplas">
-      <span>📊</span> Obter 5 Consecutivas
-    </button>
-    <button class="btn-danger" onclick="limparHistorico()">
-      <span>🗑️</span> Excluir Histórico
-    </button>
-  </div>
+<div class="box info">
+<strong>Configuração de Inferência (heurística)</strong><br><br>
+GPS até <input type="number" id="gpsMax" value="20"> m |
+Wi-Fi até <input type="number" id="wifiMax" value="200"> m |
+Wi-Fi aprox até <input type="number" id="wifiAproxMax" value="1000"> m
+</div>
 
-  <div id="maps"></div>
+<button class="btn-primary" onclick="obterLocalizacao()">📍 Obter Localização</button>
+<button class="btn-secondary" onclick="obterMultiplas()">📊 5 Consecutivas</button>
+<button class="btn-danger" onclick="limparHistorico()">🗑️ Limpar Histórico</button>
 
-  <div id="stats"></div>
+<h2>📊 Resultado Atual</h2>
+<pre id="resultado">Aguardando...</pre>
 
-  <h2>📊 Resultado Atual</h2>
-  <pre id="resultado">Aguardando ação...</pre>
+<h2>🕘 Histórico</h2>
+<div class="box" id="historico"></div>
 
-  <h2>🕘 Histórico de Localizações</h2>
-  
-  <div class="export-options">
-    <button class="btn-secondary" onclick="exportarJSON()">
-      <span>💾</span> Exportar JSON
-    </button>
-    <button class="btn-secondary" onclick="exportarCSV()">
-      <span>📄</span> Exportar CSV
-    </button>
-    <button class="btn-secondary" onclick="copiarParaClipboard()">
-      <span>📋</span> Copiar Dados
-    </button>
-  </div>
-  
-  <div class="box" id="historico">
-    <p class="small">Nenhum registro ainda.</p>
-  </div>
+<h2>📈 Estatísticas</h2>
+<div class="box" id="stats"></div>
+
 </div>
 
 <script>
-const CONFIG = {
-  gpsMax: 20,
-  wifiMax: 200,
-  wifiAproxMax: 1000,
-  limiteHistorico: 50,
-  distanciaMinimaDuplicata: 10 // metros
-};
+const STORAGE = "geo_hist_v3";
+const LIMITE = 50;
+const DUP_DIST = 10;
 
-// Função para calcular distância entre dois pontos (Haversine)
-function calcularDistancia(lat1, lon1, lat2, lon2) {
-  const R = 6371e3; // Raio da Terra em metros
-  const φ1 = lat1 * Math.PI / 180;
-  const φ2 = lat2 * Math.PI / 180;
-  const Δφ = (lat2 - lat1) * Math.PI / 180;
-  const Δλ = (lon2 - lon1) * Math.PI / 180;
-
-  const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
-          Math.cos(φ1) * Math.cos(φ2) *
-          Math.sin(Δλ/2) * Math.sin(Δλ/2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-
-  return R * c; // Distância em metros
+function haversine(lat1, lon1, lat2, lon2) {
+  const R = 6371e3;
+  const toRad = x => x * Math.PI / 180;
+  const dLat = toRad(lat2 - lat1);
+  const dLon = toRad(lon2 - lon1);
+  const a = Math.sin(dLat/2)**2 +
+            Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*
+            Math.sin(dLon/2)**2;
+  return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)));
 }
 
-function obterConfig() {
+function cfgAtual() {
   return {
-    gpsMax: Number(document.getElementById("gpsMax").value),
-    wifiMax: Number(document.getElementById("wifiMax").value),
-    wifiAproxMax: Number(document.getElementById("wifiAproxMax").value)
+    gpsMax:+gpsMax.value,
+    wifiMax:+wifiMax.value,
+    wifiAproxMax:+wifiAproxMax.value
   };
 }
 
-function classificarOrigem(accuracy, cfg) {
-  if (accuracy <= cfg.gpsMax) return { tipo: "GPS", classe: "gps" };
-  if (accuracy <= cfg.wifiMax) return { tipo: "Wi-Fi", classe: "wifi" };
-  if (accuracy <= cfg.wifiAproxMax) return { tipo: "Wi-Fi Aproximado", classe: "wifi-aprox" };
-  return { tipo: "IP/Rede", classe: "ip" };
+function classificar(accuracy, cfg) {
+  if (accuracy <= cfg.gpsMax) return {tipo:"GPS", classe:"gps", fonte:"SENSOR"};
+  if (accuracy <= cfg.wifiMax) return {tipo:"Wi-Fi", classe:"wifi", fonte:"WIFI_TRIANGULATION"};
+  if (accuracy <= cfg.wifiAproxMax) return {tipo:"Wi-Fi Aproximado", classe:"wifi-aprox", fonte:"WIFI_TRIANGULATION"};
+  return {tipo:"IP", classe:"ip", fonte:"IP_LOOKUP"};
 }
 
-function carregarHistorico() {
-  const container = document.getElementById("historico");
-  const dados = JSON.parse(localStorage.getItem("geo_historico_v2")) || [];
-
-  if (dados.length === 0) {
-    container.innerHTML = '<p class="small">Nenhum registro ainda.</p>';
-    atualizarEstatisticas([]);
-    return;
-  }
-
-  container.innerHTML = `<p class="small">Total de registros: ${dados.length}</p>`;
-  
-  dados.forEach((item, index) => {
-    const mapsUrl = `https://www.google.com/maps?q=${item.lat},${item.lon}`;
-    const origem = classificarOrigem(item.precisao, obterConfig());
-
-    const div = document.createElement("div");
-    div.className = "history-item";
-    div.innerHTML = `
-      <div class="history-info">
-        <strong>${index + 1}. ${item.data}</strong>
-        <span class="badge badge-${origem.classe}">${origem.tipo}</span>
-        ${item.duplicata ? '<span class="badge" style="background: #e74c3c; color: white;">DUPLICATA</span>' : ''}
-        <br>
-        <strong>Coordenadas:</strong> ${typeof item.lat === 'number' ? item.lat.toFixed(6) : item.lat}, ${typeof item.lon === 'number' ? item.lon.toFixed(6) : item.lon}<br>
-        <strong>Precisão:</strong> ${item.precisao} m
-        ${item.velocidade !== undefined && item.velocidade !== null ? `<br><strong>Velocidade:</strong> ${item.velocidade.toFixed(1)} m/s` : ''}
-        ${item.altitude !== undefined && item.altitude !== null ? `<br><strong>Altitude:</strong> ${item.altitude.toFixed(1)} m` : ''}
-        <br>
-        <strong>Tempo de resposta:</strong> ${item.duracao_ms || 0} ms
-        ${item.distanciaAnterior !== undefined && item.distanciaAnterior !== null ? `<br><strong>Distância do anterior:</strong> ${item.distanciaAnterior.toFixed(1)} m` : ''}
-        <br>
-        <a href="${mapsUrl}" target="_blank">📍 Abrir no Google Maps</a>
-      </div>
-      <div class="delete-btn" title="Excluir registro" onclick="excluirRegistro(${index})">
-        ✖
-      </div>
-    `;
-    container.appendChild(div);
-  });
-  
-  atualizarEstatisticas(dados);
-}
-
-function atualizarEstatisticas(dados) {
-  const statsDiv = document.getElementById("stats");
-  
-  if (dados.length === 0) {
-    statsDiv.innerHTML = '';
-    return;
-  }
-  
-  const precisoes = dados.map(d => d.precisao).filter(p => p !== undefined && p !== null);
-  const duracoes = dados.map(d => d.duracao_ms).filter(d => d !== undefined && d !== null && d > 0);
-  
-  const precisaoMedia = precisoes.length > 0 ? (precisoes.reduce((a, b) => a + b, 0) / precisoes.length).toFixed(1) : '0';
-  const precisaoMin = precisoes.length > 0 ? Math.min(...precisoes) : 0;
-  const precisaoMax = precisoes.length > 0 ? Math.max(...precisoes) : 0;
-  const duracaoMedia = duracoes.length > 0 ? (duracoes.reduce((a, b) => a + b, 0) / duracoes.length).toFixed(0) : '0';
-  
-  const duplicatas = dados.filter(d => d.duplicata).length;
-  
-  const cfg = obterConfig();
-  const gps = dados.filter(d => d.precisao <= cfg.gpsMax).length;
-  const wifi = dados.filter(d => d.precisao > cfg.gpsMax && d.precisao <= cfg.wifiMax).length;
-  const outros = dados.length - gps - wifi;
-  
-  statsDiv.innerHTML = `
-    <h2>📈 Estatísticas</h2>
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-label">Total de Registros</div>
-        <div class="stat-value">${dados.length}</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Precisão Média</div>
-        <div class="stat-value">${precisaoMedia}m</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Tempo Médio</div>
-        <div class="stat-value">${duracaoMedia}ms</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Duplicatas</div>
-        <div class="stat-value">${duplicatas}</div>
-      </div>
-    </div>
-    
-    <div class="chart-container">
-      <strong>Distribuição por Tipo de Origem:</strong>
-      <div style="margin: 10px 0;">
-        <div style="display: flex; justify-content: space-between; margin: 5px 0;">
-          <span>📡 GPS: ${gps} (${((gps/dados.length)*100).toFixed(1)}%)</span>
-        </div>
-        <div class="accuracy-bar">
-          <div class="accuracy-fill" style="width: ${(gps/dados.length)*100}%">
-            ${gps > 0 ? gps : ''}
-          </div>
-        </div>
-        
-        <div style="display: flex; justify-content: space-between; margin: 5px 0;">
-          <span>📶 Wi-Fi: ${wifi} (${((wifi/dados.length)*100).toFixed(1)}%)</span>
-        </div>
-        <div class="accuracy-bar">
-          <div class="accuracy-fill" style="width: ${(wifi/dados.length)*100}%; background: #3498db;">
-            ${wifi > 0 ? wifi : ''}
-          </div>
-        </div>
-        
-        <div style="display: flex; justify-content: space-between; margin: 5px 0;">
-          <span>🌐 Outros: ${outros} (${((outros/dados.length)*100).toFixed(1)}%)</span>
-        </div>
-        <div class="accuracy-bar">
-          <div class="accuracy-fill" style="width: ${(outros/dados.length)*100}%; background: #95a5a6;">
-            ${outros > 0 ? outros : ''}
-          </div>
-        </div>
-      </div>
-    </div>
-    
-    <div class="box info">
-      <strong>📊 Faixa de Precisão:</strong> ${precisaoMin}m - ${precisaoMax}m
-    </div>
-  `;
-}
-
-function salvarHistorico(registro) {
-  const historico = JSON.parse(localStorage.getItem("geo_historico_v2")) || [];
-  
-  // Verificar duplicatas
-  if (historico.length > 0) {
-    const ultimo = historico[0];
-    const distancia = calcularDistancia(
-      ultimo.lat, ultimo.lon,
-      registro.lat, registro.lon
-    );
-    
-    registro.distanciaAnterior = distancia;
-    
-    if (distancia < CONFIG.distanciaMinimaDuplicata) {
-      registro.duplicata = true;
+function salvar(reg) {
+  const hist = JSON.parse(localStorage.getItem(STORAGE)) || [];
+  if (hist.length) {
+    const d = haversine(hist[0].lat, hist[0].lon, reg.lat, reg.lon);
+    reg.distanciaAnterior = d;
+    reg.duplicata = d < DUP_DIST;
+    if (reg.fonte==="IP_LOOKUP" && reg.duplicata) {
+      reg.ipCorporativoProvavel = true;
     }
   }
-  
-  historico.unshift(registro);
-  if (historico.length > CONFIG.limiteHistorico) {
-    historico.pop();
-  }
-  
-  localStorage.setItem("geo_historico_v2", JSON.stringify(historico));
-  carregarHistorico();
-}
-
-function excluirRegistro(index) {
-  const historico = JSON.parse(localStorage.getItem("geo_historico_v2")) || [];
-  historico.splice(index, 1);
-  localStorage.setItem("geo_historico_v2", JSON.stringify(historico));
-  carregarHistorico();
-}
-
-function limparHistorico() {
-  if (confirm("Deseja excluir todo o histórico de localizações?")) {
-    localStorage.removeItem("geo_historico_v2");
-    carregarHistorico();
-  }
+  hist.unshift(reg);
+  if (hist.length > LIMITE) hist.pop();
+  localStorage.setItem(STORAGE, JSON.stringify(hist));
+  render();
 }
 
 function obterLocalizacao() {
-  const output = document.getElementById("resultado");
-  const mapsDiv = document.getElementById("maps");
-  const btnObter = document.getElementById("btnObter");
-  
-  mapsDiv.innerHTML = "";
-  btnObter.disabled = true;
-  btnObter.innerHTML = '<span class="loading"></span> Obtendo...';
-
-  if (!navigator.geolocation) {
-    output.textContent = "❌ Geolocalização não suportada por este navegador.";
-    btnObter.disabled = false;
-    btnObter.innerHTML = '<span>📍</span> Obter Localização';
-    return;
-  }
-
-  const inicio = new Date();
-  output.textContent = "⏳ Solicitando localização...\nInício: " + inicio.toISOString();
-
-  // Timeout de segurança adicional
-  const timeoutId = setTimeout(() => {
-    output.innerHTML = `<div class="box error">
-      <strong>⚠️ Timeout de Segurança</strong><br>
-      A solicitação está demorando muito. Isso pode indicar:<br>
-      - Problema com o GPS do dispositivo<br>
-      - Sinal fraco ou ausente<br>
-      - Configurações de localização desabilitadas<br><br>
-      Tente novamente ou verifique as configurações do seu dispositivo.
-    </div>`;
-    btnObter.disabled = false;
-    btnObter.innerHTML = '<span>📍</span> Obter Localização';
-  }, 20000); // 20 segundos
-
+  const out = document.getElementById("resultado");
+  const ini = Date.now();
   navigator.geolocation.getCurrentPosition(
-    (pos) => {
-      clearTimeout(timeoutId);
-      const fim = new Date();
-      const cfg = obterConfig();
-      const origem = classificarOrigem(pos.coords.accuracy, cfg);
-
-      const registro = {
-        data: fim.toLocaleString('pt-BR'),
-        timestamp: fim.getTime(),
-        lat: pos.coords.latitude,
-        lon: pos.coords.longitude,
-        precisao: Math.round(pos.coords.accuracy),
-        altitude: pos.coords.altitude,
-        altitudePrecisao: pos.coords.altitudeAccuracy,
-        heading: pos.coords.heading,
-        velocidade: pos.coords.speed,
-        duracao_ms: fim - inicio,
-        origem: origem.tipo
+    pos => {
+      const cfg = cfgAtual();
+      const ori = classificar(pos.coords.accuracy, cfg);
+      const reg = {
+        data:new Date().toLocaleString(),
+        lat:pos.coords.latitude,
+        lon:pos.coords.longitude,
+        precisao:Math.round(pos.coords.accuracy),
+        origem:ori.tipo,
+        origemClasse:ori.classe,
+        fonte:ori.fonte,
+        cfg,
+        duracao_ms:Date.now()-ini
       };
-
-      salvarHistorico(registro);
-
-      output.textContent = JSON.stringify({
-        status: "✅ SUCESSO",
-        inicio: inicio.toISOString(),
-        fim: fim.toISOString(),
-        duracao_ms: fim - inicio,
-        latitude: registro.lat,
-        longitude: registro.lon,
-        precisao_metros: registro.precisao,
-        origem_estimada: registro.origem,
-        altitude_metros: registro.altitude,
-        velocidade_ms: registro.velocidade,
-        navegador: navigator.userAgent.split(' ').pop()
-      }, null, 2);
-
-      const mapsUrl = `https://www.google.com/maps?q=${registro.lat},${registro.lon}`;
-      mapsDiv.innerHTML = `
-        <div class="box success">
-          <strong>🗺️ Localização Obtida com Sucesso!</strong><br>
-          <span class="badge badge-${origem.classe}">${origem.tipo}</span><br>
-          Precisão: ${registro.precisao} metros<br>
-          <a href="${mapsUrl}" target="_blank">📍 Abrir no Google Maps</a>
-        </div>
-      `;
-      
-      btnObter.disabled = false;
-      btnObter.innerHTML = '<span>📍</span> Obter Localização';
+      salvar(reg);
+      out.textContent = JSON.stringify(reg,null,2);
     },
-    (err) => {
-      clearTimeout(timeoutId);
-      const mensagensErro = {
-        1: "Permissão negada pelo usuário",
-        2: "Posição indisponível (verifique se o GPS está ativo)",
-        3: "Tempo limite excedido (sinal fraco ou GPS desligado)"
-      };
-      
-      output.innerHTML = `<div class="box error">
-        <strong>❌ Erro ao obter localização</strong><br>
-        <strong>Código:</strong> ${err.code}<br>
-        <strong>Motivo:</strong> ${mensagensErro[err.code] || err.message}<br>
-        <strong>Mensagem técnica:</strong> ${err.message}<br><br>
-        <strong>Dicas:</strong><br>
-        - Verifique se o GPS está ativado no dispositivo<br>
-        - Certifique-se de que o site tem permissão para acessar sua localização<br>
-        - Se estiver em ambiente fechado, tente próximo a uma janela<br>
-        - Recarregue a página e tente novamente
-      </div>`;
-      
-      btnObter.disabled = false;
-      btnObter.innerHTML = '<span>📍</span> Obter Localização';
+    err => {
+      const tipo =
+        err.code===1 ? "DECISAO_USUARIO" :
+        err.code===2 ? "AMBIENTE_REDE" :
+        "CONDICAO_TEMPORARIA";
+      out.textContent = JSON.stringify({
+        erro:err.code,
+        tipo,
+        mensagem:err.message
+      },null,2);
     },
-    { 
-      enableHighAccuracy: true, 
-      timeout: 15000, 
-      maximumAge: 0 
-    }
+    {enableHighAccuracy:true, timeout:15000, maximumAge:0}
   );
 }
 
 async function obterMultiplas() {
-  const btnMultiplas = document.getElementById("btnMultiplas");
-  btnMultiplas.disabled = true;
-  btnMultiplas.innerHTML = '<span class="loading"></span> Obtendo...';
-  
-  for (let i = 0; i < 5; i++) {
-    await new Promise(resolve => {
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          const cfg = obterConfig();
-          const origem = classificarOrigem(pos.coords.accuracy, cfg);
-          const agora = new Date();
-          
-          salvarHistorico({
-            data: agora.toLocaleString('pt-BR'),
-            timestamp: agora.getTime(),
-            lat: pos.coords.latitude,
-            lon: pos.coords.longitude,
-            precisao: Math.round(pos.coords.accuracy),
-            altitude: pos.coords.altitude,
-            velocidade: pos.coords.speed,
-            duracao_ms: 0,
-            origem: origem.tipo
-          });
-          
-          resolve();
-        },
-        () => resolve(),
-        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-      );
+  for (let i=0;i<5;i++) {
+    await new Promise(r=>{
+      navigator.geolocation.getCurrentPosition(p=>{
+        const cfg = cfgAtual();
+        const ori = classificar(p.coords.accuracy, cfg);
+        salvar({
+          data:new Date().toLocaleString(),
+          lat:p.coords.latitude,
+          lon:p.coords.longitude,
+          precisao:Math.round(p.coords.accuracy),
+          origem:ori.tipo,
+          origemClasse:ori.classe,
+          fonte:ori.fonte,
+          cfg,
+          duracao_ms:0
+        });
+        r();
+      },()=>r());
     });
-    
-    await new Promise(r => setTimeout(r, 1000));
+    await new Promise(r=>setTimeout(r,1000));
   }
-  
-  btnMultiplas.disabled = false;
-  btnMultiplas.innerHTML = '<span>📊</span> Obter 5 Consecutivas';
 }
 
-function exportarJSON() {
-  const dados = JSON.parse(localStorage.getItem("geo_historico_v2")) || [];
-  const blob = new Blob([JSON.stringify(dados, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `geolocalizacao_${Date.now()}.json`;
-  a.click();
-  URL.revokeObjectURL(url);
+function limparHistorico() {
+  if (confirm("Excluir todo o histórico?")) {
+    localStorage.removeItem(STORAGE);
+    render();
+  }
 }
 
-function exportarCSV() {
-  const dados = JSON.parse(localStorage.getItem("geo_historico_v2")) || [];
-  
-  const headers = ['Data', 'Latitude', 'Longitude', 'Precisão (m)', 'Origem', 'Duração (ms)', 'Duplicata'];
-  const rows = dados.map(d => [
-    d.data,
-    d.lat,
-    d.lon,
-    d.precisao,
-    d.origem,
-    d.duracao_ms,
-    d.duplicata ? 'Sim' : 'Não'
-  ]);
-  
-  const csv = [headers, ...rows].map(row => row.join(',')).join('\n');
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `geolocalizacao_${Date.now()}.csv`;
-  a.click();
-  URL.revokeObjectURL(url);
+function excluir(i) {
+  const h = JSON.parse(localStorage.getItem(STORAGE))||[];
+  h.splice(i,1);
+  localStorage.setItem(STORAGE, JSON.stringify(h));
+  render();
 }
 
-function copiarParaClipboard() {
-  const dados = JSON.parse(localStorage.getItem("geo_historico_v2")) || [];
-  const texto = JSON.stringify(dados, null, 2);
-  
-  navigator.clipboard.writeText(texto).then(() => {
-    alert('✅ Dados copiados para a área de transferência!');
-  }).catch(() => {
-    alert('❌ Erro ao copiar dados.');
+function render() {
+  const hist = JSON.parse(localStorage.getItem(STORAGE))||[];
+  const hDiv = document.getElementById("historico");
+  if (!hist.length) { hDiv.innerHTML="Sem registros."; return; }
+  hDiv.innerHTML="";
+  hist.forEach((r,i)=>{
+    const map=`https://www.google.com/maps?q=${r.lat},${r.lon}`;
+    hDiv.innerHTML+=`
+      <div class="history-item">
+        <div>
+          <strong>${i+1}. ${r.data}</strong>
+          <span class="badge badge-${r.origemClasse}">${r.origem}</span>
+          ${r.ipCorporativoProvavel?'<span class="badge badge-ipcorp">IP CORP.</span>':''}
+          <br>Lat: ${r.lat} | Lon: ${r.lon}
+          <br>Precisão: ${r.precisao} m
+          ${r.distanciaAnterior!==undefined?'<br>Δ anterior: '+r.distanciaAnterior.toFixed(1)+' m':''}
+          <br><a href="${map}" target="_blank">Abrir no Maps</a>
+        </div>
+        <div class="delete-btn" onclick="excluir(${i})">✖</div>
+      </div>`;
   });
+
+  const p = hist.map(x=>x.precisao);
+  const dup = hist.filter(x=>x.duplicata).length;
+  document.getElementById("stats").innerHTML =
+    `Total: ${hist.length} | Média precisão: ${(p.reduce((a,b)=>a+b,0)/p.length).toFixed(1)} m | Duplicatas: ${dup}`;
 }
 
-// Carregar histórico ao iniciar
-carregarHistorico();
+render();
 </script>
-
 </body>
 </html>
